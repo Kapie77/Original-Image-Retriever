@@ -6,40 +6,40 @@ For now, it only works locally.
 
 ![release](https://i.ibb.co/WSYjLQM/website.png)
 
-# Websites suportados
+# Supported Websites
 - Reddit
 - DuckDuckGo
 - Wikia
 - Fandom
 
-Limite máximo: 25MB.
+Maximum limit: 25 MB.
 
-# Como usar localmente
-Acesse a pasta do OIR:
+# How to use it locally
+Access the OIR folder, example:
 ```bash
 cd /d "%USERPROFILE%\Documents\OriginalImageRetriever"
 ```
 
-Abra um servidor python (é preciso ter o python instalado):
+Start a Python server (you must have Python installed):
 ```bash
 python app.py
 ```
 
-Para parar/reiniciar digite:
+To stop/restart, type:
 ```bash
 ctrl + c
 ```
 
-URL do servidor/website:
+Server/website URL:
 http://127.0.0.1:5000/
 
-## Como abrir os arquivos/pasta diretamente via terminal
-Abra a pasta no VS Code:
+## How to open files/folders directly via the terminal
+Open the folder in VS Code:
 ```bash
 code .
 ```
 
-Como abrir um arquivo via cmd:
+How to open a file using cmd:
 ```bash
 notepad app.py
 ```
