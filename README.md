@@ -5,6 +5,7 @@ If the original image is a .WebP file, you'll be notified and the download will 
 For now, it only works locally.
 
 ![release](https://i.ibb.co/WSYjLQM/website.png)
+![release2](https://i.ibb.co/v49Sn3vz/website2.png)
 
 # Supported Websites
 - Reddit
