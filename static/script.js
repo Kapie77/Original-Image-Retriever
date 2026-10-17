@@ -1,3 +1,5 @@
+// Em um projeto Flask, .css, .js e imagens deve ficar dentro da pasta "static". //
+
 // script.js
 // static/
 
