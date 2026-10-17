@@ -3,6 +3,7 @@ This is a tool for anyone who's tired of trying to download files in .png, .jpg,
 It simply looks up the URL of the original format! It is not a .WebP converter!
 If the original image is a .WebP file, you'll be notified and the download will be blocked.
 For now, it only works locally.
+
 ![release](https://i.ibb.co/WSYjLQM/website.png)
 
 # Websites suportados
