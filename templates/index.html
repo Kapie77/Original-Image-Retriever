@@ -1,3 +1,12 @@
+<!--
+Em um projeto Flask, index.html deve ficar dentro da pasta "templates".
+No Flask, quando você usa:
+
+return render_template("index.html")
+
+o Flask procura o arquivo index.html dentro da pasta templates por padrão.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +19,8 @@
     >
 
     <title>Original Image Retriever</title>
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 
     <link rel="stylesheet" href="/static/style.css">
     <script src="/static/script.js" defer></script>
@@ -268,7 +279,7 @@
 
         <footer>
             <span>OIR — Original Image Retriever</span>
-            <span>Version 0.1 · Local Application</span>
+            <span>Version 1.0</span>
         </footer>
     </main>
 </body>
