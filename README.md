@@ -1,3 +1,5 @@
+![release](https://i.ibb.co/WSYjLQM/website.png)
+
 # Websites suportados
 - Reddit
 - DuckDuckGo
