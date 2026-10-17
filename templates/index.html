@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Original Image Retriever (OIR) helps retrieve original image versions from supported image hosts."
+    >
+
+    <title>Original Image Retriever</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/script.js" defer></script>
+</head>
+
+<body>
+    <main class="app">
+        <header class="header">
+            <div class="header-brand">
+                <div class="logo">OIR<span>.</span></div>
+
+                <div class="header-label">
+                    ORIGINAL IMAGE RETRIEVER
+                </div>
+            </div>
+
+            <a
+                class="source-link"
+                href="#"
+                aria-label="Source code repository — not available yet"
+                onclick="event.preventDefault();"
+            >
+                <span class="source-link-icon">&lt;/&gt;</span>
+                <span>Source Code</span>
+            </a>
+        </header>
+
+        <section class="hero">
+            <div class="eyebrow">
+                IMAGE RECOVERY TOOL
+            </div>
+
+            <h1>
+                Recover your images<br>
+                in their <span>original format.</span>
+            </h1>
+
+            <p class="description">
+                Paste an image URL and try to retrieve the original image
+                without relying on resized or converted versions.
+            </p>
+        </section>
+
+        <section class="panel">
+            <label for="image-url">IMAGE URL</label>
+
+            <div class="input-row">
+                <input
+                    type="url"
+                    id="image-url"
+                    placeholder="Paste an image URL..."
+                    autocomplete="url"
+                >
+
+                <button id="analyze-button">
+                    Analyze Image
+                </button>
+            </div>
+
+            <div class="supported">
+                <span class="status-dot"></span>
+                Initial support: Fandom, Wikia, Reddit, DuckDuckGo. Limit 25 MB.
+            </div>
+
+            <div class="browser-extensions">
+
+                <span class="extensions-label">Browser extensions:</span>
+
+                <span class="browser-extension" title="Firefox extension coming soon">
+                    <svg
+                        class="browser-icon firefox-icon"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                    >
+                        <defs>
+                            <linearGradient id="firefox-gradient" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#FFCF57"/>
+                                <stop offset="48%" stop-color="#FF7139"/>
+                                <stop offset="100%" stop-color="#D83A9B"/>
+                            </linearGradient>
+                        </defs>
+
+                        <circle cx="24" cy="24" r="21" fill="url(#firefox-gradient)"/>
+                        <path
+                            d="M35 13c-3 1-5 3-6 6 0-5-3-9-8-11 2 4 1 7-2 10-5 4-7 8-5 13 2 5 8 8 14 6 7-2 11-10 7-17 0-3 1-5 3-7-1 0-2 0-3 0z"
+                            fill="#7138C8"
+                        />
+                        <path
+                            d="M17 27c1-4 5-5 8-4 4 1 6 5 4 9-2 4-7 5-11 2-2-2-3-4-1-7z"
+                            fill="#FFE56D"
+                        />
+                    </svg>
+
+                    <span class="browser-name">Firefox</span>
+                    <span class="coming-soon-label">Coming soon</span>
+                </span>
+
+                <span class="browser-extension" title="Chrome extension coming soon">
+                    <svg
+                        class="browser-icon chrome-icon"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                    >
+                        <circle cx="24" cy="24" r="22" fill="#E9ECEF"/>
+                        <path d="M24 24L13 43A22 22 0 0 1 5 14h19z" fill="#34A853"/>
+                        <path d="M5 14A22 22 0 0 1 43 14H24l-7 12z" fill="#EA4335"/>
+                        <path d="M43 14A22 22 0 0 1 13 43l10-19z" fill="#FBBC05"/>
+                        <circle cx="24" cy="24" r="10" fill="#FFFFFF"/>
+                        <circle cx="24" cy="24" r="8" fill="#4285F4"/>
+                    </svg>
+
+                    <span class="browser-name">Chrome</span>
+                    <span class="coming-soon-label">Coming soon</span>
+                </span>
+
+            </div>
+        </section>
+
+        <div id="message" class="message hidden"></div>
+
+        <section id="result" class="result hidden">
+            <div class="result-header">
+                <h2>Analysis Results</h2>
+                <span id="result-status" class="badge"></span>
+            </div>
+
+            <div class="preview-container">
+                <img id="preview" alt="Image preview">
+            </div>
+
+            <div class="metadata">
+                <div class="meta-card">
+                    <span>ACTUAL FORMAT</span>
+                    <strong id="format">—</strong>
+                </div>
+
+                <div class="meta-card">
+                    <span>FILE SIZE</span>
+                    <strong id="size">—</strong>
+                </div>
+
+                <div class="meta-card">
+                    <span>DIMENSIONS</span>
+                    <strong id="dimensions">Checking...</strong>
+                </div>
+            </div>
+
+            <div class="notice" id="notice"></div>
+
+            <a
+                id="download-button"
+                class="download-button disabled"
+                href="#"
+                aria-disabled="true"
+                tabindex="-1"
+            >
+                Download Unavailable
+            </a>
+        </section>
+
+        <!-- WebP information, security, and privacy -->
+
+        <section class="info-section">
+            <div class="info-heading">
+                <span class="info-label">INFORMATION &amp; SECURITY</span>
+
+                <h2>What Is the WebP Format?</h2>
+
+                <p>
+                    Learn how this image format works and what precautions
+                    to take when downloading images from the internet.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>What Is WebP?</h3>
+
+                <p>
+                    WebP is an image format developed by Google that generally
+                    produces smaller file sizes while maintaining good visual
+                    quality. It supports both lossy and lossless compression,
+                    as well as transparency and animation.
+                </p>
+
+                <p>
+                    Some websites use WebP to reduce data usage and speed up
+                    page loading. As a result, an image that was originally
+                    available as a PNG or JPG may be delivered to your browser
+                    in WebP format instead.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Does WebP Pose Security Risks?</h3>
+
+                <p>
+                    The WebP format is not inherently dangerous. However,
+                    as with any image format, malicious files may exploit
+                    vulnerabilities in outdated programs or libraries used
+                    to process them.
+                </p>
+
+                <p>
+                    Keep your browser and software up to date, and avoid
+                    opening files from unknown sources with outdated
+                    applications. Changing a file's extension does not
+                    eliminate potential threats.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>What About Privacy?</h3>
+
+                <p>
+                    The WebP format itself does not allow an image to track
+                    you. However, when you access an image hosted on an
+                    external server, that server may log connection
+                    information such as your IP address, access time,
+                    and technical details about your request.
+                </p>
+
+                <p>
+                    Images may also contain metadata, depending on how they
+                    were created and processed. This information can reveal
+                    details about the file or its origin.
+                </p>
+            </div>
+
+            <div class="info-card info-card-highlight">
+                <h3>How Does OIR Handle WebP Images?</h3>
+
+                <p>
+                    The Original Image Retriever attempts to retrieve an
+                    alternative version of an image whenever possible.
+                    If the server continues to deliver WebP and no other
+                    format can be obtained, the program disables the
+                    download instead of automatically converting the file.
+                </p>
+
+                <p>
+                    This limitation prevents a converted image from being
+                    presented as the original file. It does not mean that
+                    WebP is unsafe, nor does it guarantee that images in
+                    other formats are safe.
+                </p>
+            </div>
+
+            <p class="info-disclaimer">
+                <strong>Important:</strong> OIR cannot guarantee that
+                external files are safe or that a retrieved image exactly
+                matches the file originally uploaded by its creator.
+                Only download files from sources you trust.
+            </p>
+        </section>
+
+        <footer>
+            <span>OIR — Original Image Retriever</span>
+            <span>Version 0.1 · Local Application</span>
+        </footer>
+    </main>
+</body>
+</html>
