@@ -6,47 +6,43 @@
 
 import urllib.request
 import urllib.error
+from urllib.parse import urlparse
 
 
 # ====================================================== #
-#                   IMAGE ERROR
+# IMAGE ERROR
 # ====================================================== #
 # Represents errors related to image downloading and
-# processing. Allows callers to handle expected failures
-# without exposing unexpected internal exceptions.
-# ------------------------------------------------------ #
+# processing.
+# ====================================================== #
 class ImageError(Exception):
     pass
 
 
 # ====================================================== #
-#                    FETCH IMAGE
+# GET REFERER
 # ====================================================== #
-# Downloads an image from a public image host.
-#
-# Validates the URL and every redirect destination.
-# Enforces download size, timeout, and redirect limits.
-#
-# Identifies the actual image format using the supplied
-# image detector function.
-#
-# Parameters:
-#   url: URL of the image to retrieve.
-#   validate_url_func: URL validation function.
-#   identify_image_func: Image format detection function.
-#   max_file_size: Maximum permitted file size in bytes.
-#   timeout: Maximum time allowed for the request.
-#   max_redirects: Maximum permitted redirects.
-#   user_agent: User-Agent header for the request.
-#
-# Returns:
-#   A dictionary containing the image data, detected format,
-#   extension, size, content type, and final URL.
-#
-# Raises:
-#   ValueError if URL validation fails.
-#   ImageError if the download or image identification fails.
-# ------------------------------------------------------ #
+# Selects an appropriate Referer for known image hosts.
+# ====================================================== #
+def get_referer(url):
+    host = (urlparse(url).hostname or "").lower()
+
+    if host.endswith("reddit.com") or host.endswith("redd.it"):
+        return "https://www.reddit.com/"
+
+    if host == "static.wikia.nocookie.net":
+        return "https://lastyear.fandom.com/"
+
+    return None
+
+
+# ====================================================== #
+# FETCH IMAGE
+# ====================================================== #
+# Validates the URL and redirect destinations, downloads
+# the image within the configured size limit, and identifies
+# the actual format from its content.
+# ====================================================== #
 def fetch_image(
     url,
     validate_url_func,
@@ -58,39 +54,40 @@ def fetch_image(
 ):
     validate_url_func(url)
 
-    request_obj = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": user_agent,
-            "Accept": (
-                "image/png,image/jpeg,image/gif,image/bmp,"
-                "image/tiff,image/svg+xml"
-            ),
-            "Accept-Language": "en-US,en;q=0.9",
-            "Referer": "https://www.reddit.com/",
-        },
-    )
+    headers = {
+        "User-Agent": user_agent,
+        "Accept": (
+            "image/png,image/jpeg,image/gif,image/bmp,"
+            "image/tiff,image/svg+xml,image/webp;q=0,"
+            "*/*;q=0.5"
+        ),
+        "Accept-Language": "en-US,en;q=0.9",
+    }
 
-    # Validate every redirect destination and limit the number
-    # of redirects allowed during a single download.
+    referer = get_referer(url)
+    if referer:
+        headers["Referer"] = referer
+
+    request_obj = urllib.request.Request(url, headers=headers)
+
+    # Validates each redirect and enforces the redirect limit.
     class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
         max_redirections = max_redirects
         max_repeats = max_redirects
 
         def redirect_request(self, req, fp, code, msg, headers, newurl):
-            # Reject invalid or unsafe redirect destinations.
             validate_url_func(newurl)
 
-            # Let urllib enforce the redirect-count limits.
             redirected = super().redirect_request(
                 req, fp, code, msg, headers, newurl
             )
 
             if redirected is not None:
-                redirected.add_header(
-                    "Referer",
-                    "https://lastyear.fandom.com/",
-                )
+                redirected.remove_header("Referer")
+
+                redirect_referer = get_referer(newurl)
+                if redirect_referer:
+                    redirected.add_header("Referer", redirect_referer)
 
             return redirected
 
@@ -152,6 +149,12 @@ def fetch_image(
 
             content_type = response.headers.get("Content-Type", "")
 
+            # Temporary diagnostics: these appear in the Render logs.
+            print("Image final URL:", final_url)
+            print("Image Content-Type:", content_type)
+            print("Image bytes:", len(data))
+            print("Image signature:", repr(data[:16]))
+
             fmt, extension = identify_image_func(data, content_type)
 
             if fmt == "Unknown":
@@ -172,12 +175,14 @@ def fetch_image(
         raise ImageError(
             f"The server returned HTTP {exc.code} "
             "when accessing the image."
-        )
+        ) from exc
 
-    except urllib.error.URLError:
+    except urllib.error.URLError as exc:
         raise ImageError(
             "Unable to connect to the image server."
-        )
+        ) from exc
 
-    except TimeoutError:
-        raise ImageError("The server took too long to respond.")
+    except TimeoutError as exc:
+        raise ImageError(
+            "The server took too long to respond."
+        ) from exc
